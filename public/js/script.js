@@ -16,19 +16,23 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Hàm gọi API từ server để lấy thông tin thời tiết
     function getWeather(lat, lon) {
-        const url = `/weather?lat=${lat}&lon=${lon}`;
+        const url = `/api/weather?lat=${lat}&lon=${lon}`;
 
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                const temp = data.main.temp;
-                const weather = data.weather[0].description;
-                const city = data.name;
-                weatherInfo.innerHTML = `
-                    <h2>${city}</h2>
-                    <p>${temp}°C</p>
-                    <p>${weather}</p>
-                `;
+                if (data.error) {
+                    weatherInfo.innerHTML = `<p>${data.error}</p>`;
+                } else {
+                    const temp = data.main.temp;
+                    const weather = data.weather[0].description;
+                    const city = data.name;
+                    weatherInfo.innerHTML = `
+                        <h2>${city}</h2>
+                        <p>${temp}°C</p>
+                        <p>${weather}</p>
+                    `;
+                }
             })
             .catch(() => {
                 weatherInfo.innerHTML = "<p>Unable to fetch weather data.</p>";
